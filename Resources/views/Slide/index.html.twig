@@ -1,0 +1,14 @@
+<div class="kek-slider">
+    <ul class="slider">
+        {% for slide in slides %}
+            <li><img class="img-responsive" src="{{ slide.translation.pathname }}" alt="0"></li>
+        {% endfor %}
+    </ul>
+    <div class="carousel-wrapper">
+        <ul class="carousel">
+            {% for slide in slides %}
+                <li></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

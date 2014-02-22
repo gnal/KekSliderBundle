@@ -1,0 +1,7 @@
+{
+    "name": "kek/slider-bundle",
+    "autoload": {
+        "psr-0": { "Kek\\SliderBundle": "" }
+    },
+    "target-dir": "Kek/SliderBundle"
+}
