@@ -17,17 +17,13 @@ if ( typeof Object.create !== 'function' ) {
             self.$carousel = self.$el.find('ul.carousel');
             self.options = $.extend({}, $.fn.kekSlider.options, options);
 
-            // if (typeof self.options.carouselLiDimension === 'undefined') {
-            //     alert('KekSlider: the option carouselLiDimension must be set. You must calculate padding, margin and border.');
-            //     return;
-            // }
-
+            // calculate carousel li dimension and carousel wrapper dimension
             if (self.options.axis === 'x') {
                 self.options.carouselLiDimension = self.$carousel.children().first().outerWidth(true);
-                self.carouselWrapDimension = self.$carousel.closest('div').width();
+                self.carouselWrapDimension = self.$carousel.closest('.carousel-wrapper').width();
             } else {
                 self.options.carouselLiDimension = self.$carousel.children().first().outerHeight(true);
-                self.carouselWrapDimension = self.$carousel.closest('div').height();
+                self.carouselWrapDimension = self.$carousel.closest('.carousel-wrapper').height();
             }
 
             if (!self.options.infinite) {
@@ -48,10 +44,12 @@ if ( typeof Object.create !== 'function' ) {
             }
 
             self.initMarkup();
-            // start the carousel only when all images have loaded so we dont get a animation with no images
+
+            // start the carousel only when all images have loaded so we dont get animation with no images
             $(window).on('load', function() {
                 self.options.cycle && self.cycle();
             });
+
             self.listen();
         },
 
@@ -78,12 +76,12 @@ if ( typeof Object.create !== 'function' ) {
                     $e.attr('data-id', i);
 
                     // an absolute element is not automatically put top left
-                    $e
-                        .css('top', 1)
-                        .css('left', 1)
-                        // width 100% is needed for firefox
-                        .css('width', '100%')
-                    ;
+                    // $e
+                    //     .css('top', 1)
+                    //     .css('left', 1)
+                    //     // width 100% is needed for firefox
+                    //     .css('width', '100%')
+                    // ;
 
                     if (i !== 0) {
                         $e
@@ -142,7 +140,7 @@ if ( typeof Object.create !== 'function' ) {
             });
 
             if (self.options.slider) {
-                self.$carousel.children('li').on('click', function(e) {
+                self.$carousel.children().on('click', function(e) {
                     e.preventDefault();
                     if (!self.ready()) return;
                     self.show($(this));
@@ -267,12 +265,12 @@ if ( typeof Object.create !== 'function' ) {
         {
             if ($carouselLi === 'next') {
                 var direction = 'next';
-                $carouselLi = this.$activeCarouselLi.next().length ? this.$activeCarouselLi.next() : this.$carousel.children('li').first();
+                $carouselLi = this.$activeCarouselLi.next().length ? this.$activeCarouselLi.next() : this.$carousel.children().first();
             }
 
             if ($carouselLi === 'prev') {
                 var direction = 'prev';
-                $carouselLi = this.$activeCarouselLi.prev().length ? this.$activeCarouselLi.prev() : this.$carousel.children('li').last();
+                $carouselLi = this.$activeCarouselLi.prev().length ? this.$activeCarouselLi.prev() : this.$carousel.children().last();
             }
 
             var self = this,
@@ -297,17 +295,11 @@ if ( typeof Object.create !== 'function' ) {
                 .css('z-index', 998)
             ;
 
-            // fix carousel active li
+            // set CAROUSEL active li
             $carouselLi.addClass('active');
             self.$activeCarouselLi.removeClass('active');
 
             $sliderLi.effect(self.options.sliderEffect, self.options.sliderProperties, self.options.sliderSpeed, function() {
-                // for optimization we should move all the css into a default slider css file and work with classes.
-
-                // reason we can't just have one relative and the rest absolute at all time is that whenever we will hide the relative (need to hide it to then make it reappear) one our slide will lose its height
-
-                // if we ever have a problem here, what we could do is rigth before set li height and wdith to image's height and width, do the position switch, then set the li height and width back to auto/100%.
-
                 $sliderLi
                     .css('position', 'relative')
                 ;
@@ -316,29 +308,17 @@ if ( typeof Object.create !== 'function' ) {
                     .css('display', 'none')
                     .css('position', 'absolute')
                 ;
-                self.$activeSliderLi.find('.overlay').hide();
 
-                var callback = function() {
-                    if (direction === 'next') {
-                        self.options.afterNext();
-                    } else if (direction === 'prev') {
-                        self.options.afterPrev();
-                    }
-                    self.$activeSliderLi = $sliderLi;
-                    self.$activeCarouselLi = $carouselLi;
-                    self.sliderReady = true;
-                };
-
-                if ($sliderLi.find('.overlay').length) {
-                    $sliderLi.find('.overlay').effect(
-                        self.options.overlayEffect,
-                        self.options.overlayProperties,
-                        self.options.overlaySpeed,
-                        callback
-                    );
-                } else {
-                    callback();
+                if (direction === 'next') {
+                    self.options.afterNext();
+                } else if (direction === 'prev') {
+                    self.options.afterPrev();
                 }
+
+                self.$activeSliderLi = $sliderLi;
+                self.$activeCarouselLi = $carouselLi;
+
+                self.sliderReady = true;
             });
         }
     };
@@ -362,9 +342,6 @@ if ( typeof Object.create !== 'function' ) {
         sliderEffect: 'fade',
         sliderProperties: {mode: 'show', easing: 'swing'},
         sliderSpeed: 400,
-        overlayEffect: 'slide',
-        overlayProperties: {direction: 'left', mode: 'show', easing: 'swing'},
-        overlaySpeed: 900,
         afterNext: function() {},
         afterPrev: function() {}
     };

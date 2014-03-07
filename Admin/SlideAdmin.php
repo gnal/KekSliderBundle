@@ -4,7 +4,7 @@ namespace Kek\SliderBundle\Admin;
 
 use Msi\AdminBundle\Admin\Admin;
 use JMS\DiExtraBundle\Annotation as DI;
-use Msi\AdminBundle\Grid\GridBuilder;
+use Msi\AdminBundle\Grid\Grid;
 use Symfony\Component\Form\FormBuilder;
 
 /**
@@ -18,9 +18,9 @@ class SlideAdmin extends Admin
         $this->class = $this->container->getParameter('kek_slider.slide.class');
     }
 
-    public function buildGrid(GridBuilder $builder)
+    public function buildGrid(Grid $grid)
     {
-        $builder
+        $grid
             ->add('published', 'boolean')
             ->add('image', 'image', [
                 'translation' => true,

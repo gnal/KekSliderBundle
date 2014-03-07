@@ -12,8 +12,8 @@
 }
 
 .kek-slider .slider > li {
-    top: 1;
-    left: 1;
+    top: 1px;
+    left: 1px;
     width: 100%;
 }
 
